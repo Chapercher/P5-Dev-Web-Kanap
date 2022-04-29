@@ -33,7 +33,7 @@ fetch(url).then(response => response.json().then((data) => {
 	}
 }));
 
-//Écouteur d'évènement sur la soumission du panier
+//Écouteur d'évènement sur la soumission du panier === VOIR COMMENT FAIRE POUR ALLEZ SUR L'AUTRE PAGE
 let button = document.querySelector('#addToCart');
 
 button.addEventListener('click', function (){
