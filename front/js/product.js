@@ -1,12 +1,5 @@
+// pour importer l'image
 
-// pour importer l'image, (ça marche po) oscour
-	let img = document.createElement('img');
-	img.src = "./images/logo.png";
-	let block = document.getElementsByClassName('item__img');
-	// block.classList.add('item__img'); Il faut que j'add la class
-	block.appendChild = img;
-	//le log est bon pourtant on a bien l'elt img
-	console.log(img)
 
 //récupérer les paramètres dans l'url
 const queryString = window.location.search;
@@ -18,10 +11,13 @@ let url = `http://localhost:3000/api/products/${productId}`;
 
 fetch(url).then(response => response.json().then((data) => {
 
+	//Appel de l'img du canapé
+	document.querySelector('.item__img > img').src = data.imageUrl;
+
+
 	document.getElementById('title').innerHTML = data.name;
 	document.getElementById('price').innerHTML = data.price;
 	document.getElementById('description').innerHTML = data.description;
-	document.getElementsByClassName('item__image').innerHTML = data.imageUrl;
 
 	let colorsNode = document.getElementById('colors');
 	for (let color of data.colors) {
@@ -36,8 +32,23 @@ fetch(url).then(response => response.json().then((data) => {
 //Écouteur d'évènement sur la soumission du panier === VOIR COMMENT FAIRE POUR ALLEZ SUR L'AUTRE PAGE
 let button = document.querySelector('#addToCart');
 
+function addToCart(id, color, qty){
+	let cart = [
+		id = id,
+		color = color,
+		qty = qty
+ 	];
+	//Pour récupérer les qty
+
+
+	localStorage.setItem('cart', cart)
+	console.log(localStorage.getItem('cart'))
+}
+
 button.addEventListener('click', function (){
-	console.log(button)
+	let color = document.getElementById('colors');
+	let qty = document.getElementById('quantity');
+	addToCart(productId, color.options[color.selectedIndex].value, qty.value);
 })
 
 
