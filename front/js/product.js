@@ -35,30 +35,28 @@ function addToCart(id, color, qty) {
 		qty = qty
 	];
 
-	let propertyColor = Object.entries(cart) // TRANSFORMER UN TABLEAU EN OBJ (PS: INUTILE)
-
-	//JE NE COMPREND PAS COMMENT JE PEUX FAIRE POUR SET PLUSIEURS PRODUIT DIF UN PEU COMME UN COOKIE ........ JE SUIS PERDU
+	let currentCart = JSON.parse(localStorage.getItem('products'));
 
 	//Pour récupérer les qty
-	if (localStorage['products']) { //tableau de product, recupère la qty des prod
-		let productFound = false; //init a false
-		for (let i of localStorage['products']){ //Boucle pour recuperer la clr, donc voir cb le client en a prix
-			if(i.color === cart.color){
-				// i.qty += cart.qty
-				productFound = true;
-				break
+	if (currentCart) { //tableau de product, recupère la qty des prod
+		for (let i of currentCart){ //Boucle pour recuperer la clr, donc voir cb le client en a prix
+			if(i.id === cart.id){
+				if (color === cart.color){
+					i.qty += cart.qty
+					break
+				}else{
+					currentCart.push(cart);
+				}
+			}else{
+				currentCart.push(cart);
 			}
 		}
-		if (!productFound){ // si y en a pas il en push 1
-			localStorage.setItem(localStorage['products'].push(cart))
-			console.log(localStorage['products'].push(cart))
-		}
+		localStorage.setItem('products', JSON.stringify(currentCart)) //sinon recupère les donné
 	}else{
-		localStorage.setItem('products', cart) //sinon recupère les donné
+		let newCart = [];
+		newCart.push(cart)
+		localStorage.setItem('products', JSON.stringify(newCart))
 	}
-	console.log(localStorage)
-
-	// localStorage.setItem('cart', cart)
 }
 
 button.addEventListener('click', function () {
