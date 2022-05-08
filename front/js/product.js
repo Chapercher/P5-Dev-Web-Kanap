@@ -29,30 +29,27 @@ fetch(url).then(response => response.json().then((data) => {
 let button = document.querySelector('#addToCart');
 
 function addToCart(id, color, qty) {
-	let cart = [
-		id = id,
-		color = color,
-		qty = qty
-	];
+	let cart = {
+		id: id,
+		color: color,
+		qty: qty
+	};
 
 	let currentCart = JSON.parse(localStorage.getItem('products'));
-
+	let isNewProduct = true;
 	//Pour récupérer les qty
-	if (currentCart) { //tableau de product, recupère la qty des prod
-		for (let i of currentCart){ //Boucle pour recuperer la clr, donc voir cb le client en a prix
-			if(i.id === cart.id){
-				if (color === cart.color){
-					i.qty += cart.qty
-					break
-				}else{
-					currentCart.push(cart);
-				}
-			}else{
-				currentCart.push(cart);
+	if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des prod
+		for (let i of currentCart) { //Boucle pour recuperer la clr, donc voir cb le client en a prix
+			if (i.id === cart.id && i.color === cart.color) {
+				i.qty = parseInt(i.qty) + parseInt(cart.qty);
+				isNewProduct = false;
 			}
 		}
+		if (isNewProduct) {
+			currentCart.push(cart);
+		}
 		localStorage.setItem('products', JSON.stringify(currentCart)) //sinon recupère les donné
-	}else{
+	} else {
 		let newCart = [];
 		newCart.push(cart)
 		localStorage.setItem('products', JSON.stringify(newCart))
