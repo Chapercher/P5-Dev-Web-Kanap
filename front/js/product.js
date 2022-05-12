@@ -6,7 +6,8 @@ const productId = urlParams.get('id');
 //Appel a l'API avec "id" en paramètre de function
 let url = `http://localhost:3000/api/products/${productId}`;
 
-fetch(url).then(response => response.json().then((data) => {
+fetch(url).then(response => response.json()
+	.then((data) => {
 
 	//Appel de l'img du canapé
 	document.querySelector('.item__img > img').src = data.imageUrl;
