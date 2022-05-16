@@ -2,7 +2,7 @@ let cart = []
 let cartProducts = JSON.parse(localStorage.getItem('products'))
 let sousValue = []
 let total = 0
-let qty = []
+let qty = 0
 let values = []
 
 // Parcourir les options / ID stocker dans le localStorage
@@ -45,7 +45,22 @@ for (let i = 0; i < cartProducts.length; i++) {
              </div>
            </article>`
 			document.getElementById('cart__items').innerHTML += html;
+
+
+			total += parseInt(productData.price) * parseInt(product.qty)
+			qty += parseInt(product.qty)
+			document.getElementById('totalPrice').innerHTML = total;
+			document.getElementById('totalQuantity').innerHTML = qty;
+
+// addeventlistener pour gérer la suppression/ajout d'un produit
+			let remove = document.querySelector('.deleteItem')
+			remove.addEventListener('click', function (e) {
+				e.preventDefault()
+				alert('coucou')
+			})
+			console.log(remove)
 		})
+
 
 }
 
@@ -87,9 +102,9 @@ const validFirstName = function (inputFirstName) {
 
 	//On test l'expression régulière
 	if (firstNameRegExp.test(inputFirstName.value)) {
-		p.innerHTML = "Prénom Valide"
+		document.getElementById('firstNameErrorMsg').innerHTML = ""
 	} else {
-		p.innerHTML = "Prénom invalide"
+		document.getElementById('firstNameErrorMsg').innerHTML = "Prénom invalide"
 	}
 }
 // ***** Validation Nom
@@ -137,7 +152,7 @@ const validCity = function (inputCity) {
 }
 
 // ***** Validation Email
-const validationEmail = function (inputEmail) {
+const validEmail = function (inputEmail) {
 	let emailRegExp = new RegExp(
 		'^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g'
 	);
