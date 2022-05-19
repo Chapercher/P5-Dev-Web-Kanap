@@ -21,7 +21,7 @@ for (let i = 0; i < cartProducts.length; i++) {
 		})
 		.then(respJSon => {
 			let productData = respJSon
-			console.log(respJSon)
+			// console.log(respJSon)
 			cart.push(id)
 			html = `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
              <div class="cart__item__img">
@@ -53,15 +53,16 @@ for (let i = 0; i < cartProducts.length; i++) {
 			document.getElementById('totalQuantity').innerHTML = qty;
 
 // addeventlistener pour gérer la suppression/ajout d'un produit
-			let remove = document.querySelector('.deleteItem')
-			remove.addEventListener('click', function (e) {
-				e.preventDefault()
-				alert('coucou')
-			})
-			console.log(remove)
+			let remove = document.querySelectorAll('.deleteItem')
+			// console.log(remove)
+			for (let j of remove) {
+				j.addEventListener('click', function (e) {
+					e.preventDefault()
+					// console.log(j)
+					alert('coucou')
+				})
+			}
 		})
-
-
 }
 
 
@@ -87,6 +88,11 @@ form.email.addEventListener('change', function () {
 
 form.addEventListener('submit', function (e) {
 	e.preventDefault();
+	console.log('Prénom : ', e.target.firstName.value)
+	console.log('Nom : ', e.target.lastName.value)
+	console.log('Adresse : ', e.target.address.value)
+	console.log('Ville : ', e.target.city.value)
+	console.log('Email : ', e.target.email.value)
 	if (validFirstName(form.firstName) && validName(form.name) && validAdress(form.adress) && validCity(form.city) && validEmail(form.email)) {
 		form.submit();
 	}
@@ -94,60 +100,55 @@ form.addEventListener('submit', function (e) {
 
 // ***** Validation Prénom
 const validFirstName = function (inputFirstName) {
-	let firstNameRegExp = new regExp(
-		'^[a-zA-Z]+$'
+	let firstNameRegExp = new RegExp(
+		/^[a-zA-Z\-]+$/
 	)
-	// Récupération de la balise <P>
-	let p = inputFirstName.nextElementSibling
-
+	console.log(firstNameRegExp)
 	//On test l'expression régulière
 	if (firstNameRegExp.test(inputFirstName.value)) {
 		document.getElementById('firstNameErrorMsg').innerHTML = ""
 	} else {
-		document.getElementById('firstNameErrorMsg').innerHTML = "Prénom invalide"
+		document.getElementById('firstNameErrorMsg').innerHTML = "Est-ce votre vrai prénom ?"
 	}
 }
 // ***** Validation Nom
 const validName = function (inputName) {
-	let nameRegExp = new regExp(
-		'^[a-zA-Z]+$'
+	let nameRegExp = new RegExp(
+		/^[a-zA-Z\-]+$/
 	)
-	// Récupération de la balise <P>
-	let p = inputName.nextElementSibling
-
+	console.log(nameRegExp)
 	//On test l'expression régulière
 	if (nameRegExp.test(inputName.value)) {
-		p.innerHTML = "Nom Valide"
+		document.getElementById('lastNameErrorMsg').innerHTML = ""
 	} else {
-		p.innerHTML = "Nom invalide"
+		document.getElementById('lastNameErrorMsg').innerHTML = "Je veux bien être indulgent mais un nom avec des chiffres ... "
 	}
 }
 // ***** Validation Adresse
 const validAdress = function (inputAdress) {
-
-	// Récupération de la balise <P>
-	let p = inputAdress.nextElementSibling
-
+	let adressRegExp = new RegExp(
+		// /^[0-9]+[a-zA-Z\-]+$/
+		/(\d+)?\,?\s?(bis|ter|quater)?\,?\s?(rue|avenue|boulevard|r|av|ave|bd|bvd|square|sente|impasse|cours|esplanade|allée|résidence|parc|rond-point|chemin|côte|place|cité|quai|passage|lôtissement|hameau)?\s([a-zA-Zà-ÿ0-9\s]{2,})+$/gi
+	)
+	console.log(adressRegExp)
 	//On test l'expression régulière
-	if (inputAdress.value) {
-		p.innerHTML = "Adresse Valide"
+	if (adressRegExp.test(inputAdress.value)) {
+		document.getElementById('addressErrorMsg').innerHTML = ""
 	} else {
-		p.innerHTML = "Adresse invalide"
+		document.getElementById('addressErrorMsg').innerHTML = "Cette adresse n'existe pas !"
 	}
 }
 // ***** Validation City
 const validCity = function (inputCity) {
-	let cityRegExp = new regExp(
-		'^[a-zA-Z]+$'
+	let cityRegExp = new RegExp(
+		/^[a-zA-Z\-]+$/
 	)
-	// Récupération de la balise <P>
-	let p = inputCity.nextElementSibling
-
+	console.log(cityRegExp)
 	//On test l'expression régulière
 	if (cityRegExp.test(inputCity.value)) {
-		p.innerHTML = "Adresse Valide"
+		document.getElementById('cityErrorMsg').innerHTML = ""
 	} else {
-		p.innerHTML = "Adresse invalide"
+		document.getElementById('cityErrorMsg').innerHTML = "Habitez-vous vraiment là-bas ?"
 	}
 }
 
@@ -156,13 +157,11 @@ const validEmail = function (inputEmail) {
 	let emailRegExp = new RegExp(
 		'^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g'
 	);
-	// Récupération de la balsie <p>
-	let p = inputEmail.nextElementSibling
-
+	console.log(emailRegExp)
 	//On test l'expression régulière
 	if (emailRegExp.test(inputEmail.value)) {
-		p.innerHTML = "Adresse mail valide"
+		document.getElementById('emailErrorMsg').innerHTML = ""
 	} else {
-		p.innerHTML = "Adresse mail invalide"
+		document.getElementById('emailErrorMsg').innerHTML = "Essayez encore, promis vous ne serez pas spammez ! "
 	}
 }
