@@ -17,6 +17,6 @@ fetch(url).then(response => response.json().then((data) => {
 		document.getElementById('items').innerHTML = html;
 
 	})
-).catch(err => console.log('Erreur : ' + err));
+).catch(err => console.log(err));
 
 

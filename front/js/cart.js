@@ -62,7 +62,7 @@ for (let i = 0; i < cartProducts.length; i++) {
 					alert('coucou')
 				})
 			}
-		})
+		}).catch((err) => console.log(err))
 }
 
 

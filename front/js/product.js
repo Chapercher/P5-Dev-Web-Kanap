@@ -24,7 +24,8 @@ fetch(url).then(response => response.json()
 		addOption.value = color;
 		colorsNode.add(addOption);
 	}
-}));
+}).catch((err) => console.log(err))
+);
 
 //Écouteur d'évènement sur la soumission du panier === VOIR COMMENT FAIRE POUR ALLEZ SUR L'AUTRE PAGE
 let button = document.querySelector('#addToCart');
