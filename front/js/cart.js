@@ -1,19 +1,43 @@
-let cart = []
 let cartProducts = JSON.parse(localStorage.getItem('products'))
+let cart = []
 let sousValue = []
+let values = []
 let total = 0
 let qty = 0
-let values = []
-
-// Parcourir les options / ID stocker dans le localStorage
-
-let cartProductID = localStorage.length
 let html = ''
 
+//function => addEventListener(change)
+function updateCartQty(id, color, qty) {
+	let newQty = 0
+	let newTotal = 0
+	let cart = {
+		id: id,
+		color: color,
+		qty: qty
+	};
+
+	let currentCart = JSON.parse(localStorage.getItem('products'));
+
+	//Pour récupérer les qty
+	if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des prod
+		for (let i of currentCart) { //Boucle pour recuperer la clr, donc voir cb le client en a prix
+			if (i.id === cart.id && i.color === cart.color) {
+				i.qty = parseInt(cart.qty);
+			}
+			newTotal += parseInt(i.price) * parseInt(i.qty)
+			newQty += parseInt(i.qty)
+			document.getElementById('totalPrice').innerHTML = newTotal;
+			document.getElementById('totalQuantity').innerHTML = newQty;
+		}
+		localStorage.setItem('products', JSON.stringify(currentCart)) // enregistre les items
+	}
+}
+
+
+// Parcourir les options / ID stocker dans le localStorage
 for (let i = 0; i < cartProducts.length; i++) {
 	let product = cartProducts[i]
 	let id = cartProducts[i].id
-
 
 	fetch(`http://localhost:3000/api/products/${id}`)
 		.then(resp => {
@@ -21,7 +45,6 @@ for (let i = 0; i < cartProducts.length; i++) {
 		})
 		.then(respJSon => {
 			let productData = respJSon
-			// console.log(respJSon)
 			cart.push(id)
 			html = `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
              <div class="cart__item__img">
@@ -52,18 +75,24 @@ for (let i = 0; i < cartProducts.length; i++) {
 			document.getElementById('totalPrice').innerHTML = total;
 			document.getElementById('totalQuantity').innerHTML = qty;
 
+
 // addeventlistener pour gérer la suppression/ajout d'un produit
 			let remove = document.querySelectorAll('.deleteItem')
-			// console.log(remove)
 			for (let j of remove) {
 				j.addEventListener('click', function (e) {
 					e.preventDefault()
-					// console.log(j)
-					alert('coucou')
 				})
 			}
 		}).catch((err) => console.log(err))
 }
+
+let cartQty = document.addEventListener('change', function (e) {
+	let article = e.target.closest('article')
+	let color = article.dataset.color
+	let id = article.dataset.id
+	let qty = e.target.value
+	updateCartQty(id, color, qty)
+})
 
 
 // Formulaire client
@@ -93,10 +122,38 @@ form.addEventListener('submit', function (e) {
 	console.log('Adresse : ', e.target.address.value)
 	console.log('Ville : ', e.target.city.value)
 	console.log('Email : ', e.target.email.value)
-	if (validFirstName(form.firstName) && validName(form.name) && validAdress(form.adress) && validCity(form.city) && validEmail(form.email)) {
-		form.submit();
-	}
-});
+	if (validFirstName(form.firstName) && validName(form.name) && validAdress(form.address) && validCity(form.city) && validEmail(form.email)) {
+		let currentCart = JSON.parse(localStorage.getItem('products'));
+		let idList = []
+		//Pour récupérer les qty
+		if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des prod
+			for (let i of currentCart) {
+				idList.push(i.id)
+			}
+		}
+		fetch('localhost:3000/api/order', {
+			method: 'post',
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				contact: {
+					firstName: form.firstName,
+					lastName: form.name,
+					address:form.address,
+					city: form.city,
+					email: form.email
+				},
+				product: idList
+		}).then(function(response) {
+			//save le numero dans le local storage
+			return response.json();
+		})
+
+		// form.submit();
+	})
+}
+}
 
 // ***** Validation Prénom
 const validFirstName = function (inputFirstName) {

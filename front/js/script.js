@@ -1,7 +1,9 @@
 let url = `http://localhost:3000/api/products`;
 
 //
-fetch(url).then(response => response.json().then((data) => {
+fetch(url)
+	.then(response => response.json()
+	.then((data) => {
 		console.log(data);
 		let html = '';
 		data.forEach(function (item) {

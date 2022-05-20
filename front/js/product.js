@@ -30,11 +30,12 @@ fetch(url).then(response => response.json()
 //Écouteur d'évènement sur la soumission du panier === VOIR COMMENT FAIRE POUR ALLEZ SUR L'AUTRE PAGE
 let button = document.querySelector('#addToCart');
 
-function addToCart(id, color, qty) {
+function addToCart(id, color, qty, price){
 	let cart = {
 		id: id,
 		color: color,
-		qty: qty
+		qty: qty,
+		price: price
 	};
 
 	let currentCart = JSON.parse(localStorage.getItem('products'));
@@ -50,7 +51,7 @@ function addToCart(id, color, qty) {
 		if (isNewProduct) {
 			currentCart.push(cart);
 		}
-		localStorage.setItem('products', JSON.stringify(currentCart)) //sinon recupère les donné
+		localStorage.setItem('products', JSON.stringify(currentCart)) //enregistre les items
 	} else {
 		let newCart = [];
 		newCart.push(cart)
@@ -61,7 +62,8 @@ function addToCart(id, color, qty) {
 button.addEventListener('click', function () {
 	let color = document.getElementById('colors');
 	let qty = document.getElementById('quantity');
-	addToCart(productId, color.options[color.selectedIndex].value, qty.value);
+	let price = document.getElementById('price')
+	addToCart(productId, color.options[color.selectedIndex].value, qty.value, price.innerText);
 })
 
 
