@@ -86,13 +86,16 @@ for (let i = 0; i < cartProducts.length; i++) {
 		}).catch((err) => console.log(err))
 }
 
-let cartQty = document.addEventListener('change', function (e) {
-	let article = e.target.closest('article')
-	let color = article.dataset.color
-	let id = article.dataset.id
-	let qty = e.target.value
-	updateCartQty(id, color, qty)
-})
+let cartQty = document.getElementsByClassName('itemQuantity')
+for (let i of cartQty) {
+	i.addEventListener('change', function (e) {
+		let article = e.target.closest('article')
+		let color = article.dataset.color
+		let id = article.dataset.id
+		let qty = e.target.value
+		updateCartQty(id, color, qty)
+	})
+}
 
 
 // Formulaire client
@@ -140,20 +143,20 @@ form.addEventListener('submit', function (e) {
 				contact: {
 					firstName: form.firstName,
 					lastName: form.name,
-					address:form.address,
+					address: form.address,
 					city: form.city,
 					email: form.email
 				},
 				product: idList
-		}).then(function(response) {
-			//save le numero dans le local storage
-			return response.json();
-		})
+			}).then(function (response) {
+				//save le numero dans le local storage
+				return response.json();
+			})
 
-		// form.submit();
-	})
-}
-}
+			// form.submit();
+		})
+	}
+})
 
 // ***** Validation Prénom
 const validFirstName = function (inputFirstName) {
