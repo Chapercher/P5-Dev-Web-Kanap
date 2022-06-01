@@ -8,9 +8,8 @@ let html = ''
 
 //function => addEventListener(change)
 function updateCartQty(id, color, qty) {
-	let newQty = 0
-	let newTotal = 0
-	let cart = {
+
+	let currentItem = {
 		id: id,
 		color: color,
 		qty: qty
@@ -24,10 +23,6 @@ function updateCartQty(id, color, qty) {
 			if (i.id === cart.id && i.color === cart.color) {
 				i.qty = parseInt(cart.qty);
 			}
-			newTotal += parseInt(i.price) * parseInt(i.qty)
-			newQty += parseInt(i.qty)
-			document.getElementById('totalPrice').innerHTML = newTotal;
-			document.getElementById('totalQuantity').innerHTML = newQty;
 		}
 		localStorage.setItem('products', JSON.stringify(currentCart)) // enregistre les items
 	}
@@ -35,18 +30,21 @@ function updateCartQty(id, color, qty) {
 
 
 // Parcourir les options / ID stocker dans le localStorage
-for (let i = 0; i < cartProducts.length; i++) {
-	let product = cartProducts[i]
-	let id = cartProducts[i].id
+console.log(cartItems)
+if (cartItems !== null) {
+	for (let i = 0; i < cartItems.length; i++) {
+		let product = cartItems[i];
+		let id = cartItems[i].id;
 
-	fetch(`http://localhost:3000/api/products/${id}`)
-		.then(resp => {
-			return resp.json()
-		})
-		.then(respJSon => {
-			let productData = respJSon
-			cart.push(id)
-			html = `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
+
+		fetch(hostname + `/api/products/${id}`)
+			.then(resp => {
+				return resp.json();
+			})
+			.then(respJSon => {
+				let productData = respJSon
+				cart.push(id);
+				html = `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
              <div class="cart__item__img">
                <img src="${productData.imageUrl}" alt="${productData.altTxt}">
              </div>
@@ -75,28 +73,31 @@ for (let i = 0; i < cartProducts.length; i++) {
 			document.getElementById('totalPrice').innerHTML = total;
 			document.getElementById('totalQuantity').innerHTML = qty;
 
+				let qtyItems = document.getElementsByClassName('itemQuantity');
+				for (let product of qtyItems) {
+					product.addEventListener('change', function (e) {
+						let article = e.target.closest('article.cart__item');
+						let color = article.dataset.color;
+						let id = article.dataset.id;
+						let qty = e.target.value;
+						updateCartQty(id, color, qty);
+					})
+				}
 
-// addeventlistener pour gérer la suppression/ajout d'un produit
-			let remove = document.querySelectorAll('.deleteItem')
-			for (let j of remove) {
-				j.addEventListener('click', function (e) {
-					e.preventDefault()
-				})
-			}
-		}).catch((err) => console.log(err))
+// addeventlistener pour gérer la suppression
+				let removeItems = document.querySelectorAll('.deleteItem');
+				for (let removeItem of removeItems) {
+					removeItem.addEventListener('click', function (e) {
+						e.preventDefault();
+						let article = e.target.closest('article.cart__item');
+						let id = article.dataset.id;
+						let color = article.dataset.color;
+						removeCartItem(id, color);
+					});
+				}
+			}).catch((err) => console.log(err));
+	}
 }
-
-let cartQty = document.getElementsByClassName('itemQuantity')
-for (let i of cartQty) {
-	i.addEventListener('change', function (e) {
-		let article = e.target.closest('article')
-		let color = article.dataset.color
-		let id = article.dataset.id
-		let qty = e.target.value
-		updateCartQty(id, color, qty)
-	})
-}
-
 
 // Formulaire client
 
@@ -134,7 +135,7 @@ form.addEventListener('submit', function (e) {
 				idList.push(i.id)
 			}
 		}
-		fetch('localhost:3000/api/order', {
+		fetch(hostname + '/api/order', {
 			method: 'post',
 			headers: {
 				"Content-Type": "application/json"
@@ -152,7 +153,6 @@ form.addEventListener('submit', function (e) {
 				//save le numero dans le local storage
 				return response.json();
 			})
-
 			// form.submit();
 		})
 	}
@@ -222,6 +222,6 @@ const validEmail = function (inputEmail) {
 	if (emailRegExp.test(inputEmail.value)) {
 		document.getElementById('emailErrorMsg').innerHTML = ""
 	} else {
-		document.getElementById('emailErrorMsg').innerHTML = "Essayez encore, promis vous ne serez pas spammez ! "
+		document.getElementById('emailErrorMsg').innerHTML = "Essayez encore, promis vous ne serez pas spammé ! ";
 	}
 }
