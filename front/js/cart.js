@@ -93,6 +93,7 @@ if (cartItems !== null) {
 						let id = article.dataset.id;
 						let color = article.dataset.color;
 						removeCartItem(id, color);
+						updateCartTotal();
 					});
 				}
 			}).catch((err) => console.log(err));
@@ -107,7 +108,7 @@ form.firstName.addEventListener('change', function () {
 	validFirstName(this);
 })
 form.lastName.addEventListener('change', function () {
-	validName(this);
+	validLastName(this);
 })
 form.address.addEventListener('change', function () {
 	validAdress(this);
@@ -119,14 +120,18 @@ form.email.addEventListener('change', function () {
 	validEmail(this);
 })
 
-form.addEventListener('submit', function (e) {
+let orderBtn = document.querySelector('#order');
+
+orderBtn.addEventListener('click', function (e) {
+	console.log('bind')
 	e.preventDefault();
-	console.log('Prénom : ', e.target.firstName.value)
-	console.log('Nom : ', e.target.lastName.value)
-	console.log('Adresse : ', e.target.address.value)
-	console.log('Ville : ', e.target.city.value)
-	console.log('Email : ', e.target.email.value)
-	if (validFirstName(form.firstName) && validName(form.name) && validAdress(form.address) && validCity(form.city) && validEmail(form.email)) {
+	console.log('Prénom : ', form.firstName.value);
+	// console.log('Nom : ', e.target.lastName.value);
+	// console.log('Adresse : ', e.target.address.value);
+	// console.log('Ville : ', e.target.city.value);
+	// console.log('Email : ', e.target.email.value);
+	console.log(validFirstName(form.firstName) && validLastName(form.lastName) && validAdress(form.address) && validCity(form.city) && validEmail(form.email))
+	// if (validFirstName(form.firstName) && validName(form.name) && validAdress(form.address) && validCity(form.city) && validEmail(form.email)) {
 		let currentCart = JSON.parse(localStorage.getItem('products'));
 		let idList = []
 		//Pour récupérer les qty
@@ -135,27 +140,32 @@ form.addEventListener('submit', function (e) {
 				idList.push(i.id)
 			}
 		}
-		fetch(hostname + '/api/order', {
+		fetch(hostname + '/api/products/order', {
 			method: 'post',
 			headers: {
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
 				contact: {
-					firstName: form.firstName,
-					lastName: form.name,
-					address: form.address,
-					city: form.city,
-					email: form.email
+					firstName: form.firstName.value,
+					lastName: form.lastName.value,
+					address: form.address.value,
+					city: form.city.value,
+					email: form.email.value
 				},
-				product: idList
-			}).then(function (response) {
-				//save le numero dans le local storage
-				return response.json();
+				products: idList
 			})
-			// form.submit();
-		})
-	}
+		}).then(function (response) {
+			//save le numero dans le local storage
+			return response.json();
+		}).then(respJSon => {
+			if (respJSon.orderId){
+				localStorage.setItem('orderId', respJSon.orderId);
+				window.location = 'confirmation.html'
+			}
+		});
+		// form.submit();
+	// }
 })
 
 // ***** Validation Prénom
@@ -172,7 +182,7 @@ const validFirstName = function (inputFirstName) {
 	}
 }
 // ***** Validation Nom
-const validName = function (inputName) {
+const validLastName = function (inputLastName) {
 	let nameRegExp = new RegExp(
 		/^[a-zA-Z\-]+$/
 	)
