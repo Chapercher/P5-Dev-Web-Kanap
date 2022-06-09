@@ -15,16 +15,16 @@ function updateCartQty(id, color, qty) {
 		qty: qty
 	};
 
-	let currentCart = JSON.parse(localStorage.getItem('products'));
+	let cartItems = JSON.parse(localStorage.getItem('products'));
 
 	//Pour récupérer les qty
-	if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des prod
-		for (let i of currentCart) { //Boucle pour recuperer la clr, donc voir cb le client en a prix
-			if (i.id === cart.id && i.color === cart.color) {
-				i.qty = parseInt(cart.qty);
+	if (cartItems && cartItems.length > 0) { //tableau de product, recupère la qty des prod
+		for (let cartItem of cartItems) { //Boucle pour recuperer la couleur, donc voir cb le client en a prit
+			if (cartItem.id === currentItem.id && cartItem.color === currentItem.color) {
+				cartItem.qty = parseInt(currentItem.qty);
 			}
 		}
-		localStorage.setItem('products', JSON.stringify(currentCart)) // enregistre les items
+		localStorage.setItem('products', JSON.stringify(cartItems)); // enregistre les items
 	}
 }
 
@@ -68,10 +68,10 @@ if (cartItems !== null) {
 			document.getElementById('cart__items').innerHTML += html;
 
 
-			total += parseInt(productData.price) * parseInt(product.qty)
-			qty += parseInt(product.qty)
-			document.getElementById('totalPrice').innerHTML = total;
-			document.getElementById('totalQuantity').innerHTML = qty;
+				total += parseInt(productData.price) * parseInt(product.qty);
+				qty += parseInt(product.qty);
+				document.getElementById('totalPrice').innerHTML = total;
+				document.getElementById('totalQuantity').innerHTML = qty;
 
 				let qtyItems = document.getElementsByClassName('itemQuantity');
 				for (let product of qtyItems) {
