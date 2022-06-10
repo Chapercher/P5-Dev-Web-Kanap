@@ -1,12 +1,11 @@
-let cartProducts = JSON.parse(localStorage.getItem('products'))
-let cart = []
-let sousValue = []
-let values = []
-let total = 0
-let qty = 0
-let html = ''
+let cartItems = JSON.parse(localStorage.getItem('products'));
+let cart = [];
+let total = 0;
+let qty = 0;
+let html = '';
+let hostname = '//localhost:3000';
 
-//function => addEventListener(change)
+//function => addEventListener(change) -- Diviser en trois fonction pour gérer les =/= étapes
 function updateCartQty(id, color, qty) {
 
 	let currentItem = {
@@ -25,6 +24,38 @@ function updateCartQty(id, color, qty) {
 			}
 		}
 		localStorage.setItem('products', JSON.stringify(cartItems)); // enregistre les items
+	}
+	updateCartTotal();
+}
+
+function removeCartItem(id, color) {
+	let cartItems = JSON.parse(localStorage.getItem('products'));
+	console.log(cartItems)
+	for (let i = 0; i < cartItems.length; i++) {
+		if (cartItems[i].id === id && cartItems[i].color === color) {
+			document.querySelector('article.cart__item[data-id="' + cartItems[i].id + '"][data-color="' + cartItems[i].color + '"]').remove();
+			cartItems.splice(i, 1);
+			i--;
+		}
+	}
+
+	console.log(cartItems)
+	localStorage.setItem('products', JSON.stringify(cartItems)); // enregistre les items
+	updateCartTotal();
+}
+
+function updateCartTotal() {
+	let newQty = 0;
+	let newTotal = 0;
+	let cartItems = JSON.parse(localStorage.getItem('products'));
+
+	for (let product of cartItems) { //Boucle pour recuperer la clr, donc voir cb le client en a prit
+		if (product) {
+			newTotal += parseInt(product.price) * parseInt(product.qty);
+			newQty += parseInt(product.qty);
+			document.getElementById('totalPrice').innerHTML = newTotal;
+			document.getElementById('totalQuantity').innerHTML = newQty;
+		}
 	}
 }
 
@@ -64,8 +95,8 @@ if (cartItems !== null) {
                  </div>
                </div>
              </div>
-           </article>`
-			document.getElementById('cart__items').innerHTML += html;
+           </article>`;
+				document.getElementById('cart__items').innerHTML += html;
 
 
 				total += parseInt(productData.price) * parseInt(product.qty);
@@ -102,7 +133,7 @@ if (cartItems !== null) {
 
 // Formulaire client
 
-let form = document.querySelector('#login_form')
+let form = document.querySelector('#login_form');
 
 form.firstName.addEventListener('change', function () {
 	validFirstName(this);
@@ -133,11 +164,11 @@ orderBtn.addEventListener('click', function (e) {
 	console.log(validFirstName(form.firstName) && validLastName(form.lastName) && validAdress(form.address) && validCity(form.city) && validEmail(form.email))
 	// if (validFirstName(form.firstName) && validName(form.name) && validAdress(form.address) && validCity(form.city) && validEmail(form.email)) {
 		let currentCart = JSON.parse(localStorage.getItem('products'));
-		let idList = []
+		let idList = [];
 		//Pour récupérer les qty
 		if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des prod
 			for (let i of currentCart) {
-				idList.push(i.id)
+				idList.push(i.id);
 			}
 		}
 		fetch(hostname + '/api/products/order', {
@@ -172,26 +203,26 @@ orderBtn.addEventListener('click', function (e) {
 const validFirstName = function (inputFirstName) {
 	let firstNameRegExp = new RegExp(
 		/^[a-zA-Z\-]+$/
-	)
-	console.log(firstNameRegExp)
+	);
+	// console.log(firstNameRegExp);
 	//On test l'expression régulière
 	if (firstNameRegExp.test(inputFirstName.value)) {
-		document.getElementById('firstNameErrorMsg').innerHTML = ""
+		document.getElementById('firstNameErrorMsg').innerHTML = "";
 	} else {
-		document.getElementById('firstNameErrorMsg').innerHTML = "Est-ce votre vrai prénom ?"
+		document.getElementById('firstNameErrorMsg').innerHTML = "Est-ce votre vrai prénom ?";
 	}
 }
 // ***** Validation Nom
 const validLastName = function (inputLastName) {
 	let nameRegExp = new RegExp(
 		/^[a-zA-Z\-]+$/
-	)
-	console.log(nameRegExp)
+	);
+	// console.log(nameRegExp);
 	//On test l'expression régulière
-	if (nameRegExp.test(inputName.value)) {
-		document.getElementById('lastNameErrorMsg').innerHTML = ""
+	if (nameRegExp.test(inputLastName.value)) {
+		document.getElementById('lastNameErrorMsg').innerHTML = "";
 	} else {
-		document.getElementById('lastNameErrorMsg').innerHTML = "Je veux bien être indulgent mais un nom avec des chiffres ... "
+		document.getElementById('lastNameErrorMsg').innerHTML = "Je veux bien être indulgent mais un nom avec des chiffres ... ";
 	}
 }
 // ***** Validation Adresse
@@ -199,39 +230,39 @@ const validAdress = function (inputAdress) {
 	let adressRegExp = new RegExp(
 		// /^[0-9]+[a-zA-Z\-]+$/
 		/(\d+)?\,?\s?(bis|ter|quater)?\,?\s?(rue|avenue|boulevard|r|av|ave|bd|bvd|square|sente|impasse|cours|esplanade|allée|résidence|parc|rond-point|chemin|côte|place|cité|quai|passage|lôtissement|hameau)?\s([a-zA-Zà-ÿ0-9\s]{2,})+$/gi
-	)
-	console.log(adressRegExp)
+	);
+	// console.log(adressRegExp);
 	//On test l'expression régulière
 	if (adressRegExp.test(inputAdress.value)) {
-		document.getElementById('addressErrorMsg').innerHTML = ""
+		document.getElementById('addressErrorMsg').innerHTML = "";
 	} else {
-		document.getElementById('addressErrorMsg').innerHTML = "Cette adresse n'existe pas !"
+		document.getElementById('addressErrorMsg').innerHTML = "Cette adresse n'existe pas !";
 	}
 }
 // ***** Validation City
 const validCity = function (inputCity) {
 	let cityRegExp = new RegExp(
 		/^[a-zA-Z\-]+$/
-	)
-	console.log(cityRegExp)
+	);
+	// console.log(cityRegExp);
 	//On test l'expression régulière
 	if (cityRegExp.test(inputCity.value)) {
-		document.getElementById('cityErrorMsg').innerHTML = ""
+		document.getElementById('cityErrorMsg').innerHTML = "";
 	} else {
-		document.getElementById('cityErrorMsg').innerHTML = "Habitez-vous vraiment là-bas ?"
+		document.getElementById('cityErrorMsg').innerHTML = "Habitez-vous vraiment là-bas ?";
 	}
-}
+};
 
 // ***** Validation Email
 const validEmail = function (inputEmail) {
 	let emailRegExp = new RegExp(
 		'^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g'
 	);
-	console.log(emailRegExp)
+	// console.log(emailRegExp);
 	//On test l'expression régulière
 	if (emailRegExp.test(inputEmail.value)) {
-		document.getElementById('emailErrorMsg').innerHTML = ""
+		document.getElementById('emailErrorMsg').innerHTML = "";
 	} else {
 		document.getElementById('emailErrorMsg').innerHTML = "Essayez encore, promis vous ne serez pas spammé ! ";
 	}
-}
+};
