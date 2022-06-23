@@ -7,7 +7,7 @@ let hostname = '//localhost:3000';
 
 //function => addEventListener(change) -- Diviser en trois fonction pour gérer les =/= étapes
 function updateCartQty(id, color, qty) {
-
+// Quand on add/remove une qty
 	let currentItem = {
 		id: id,
 		color: color,
@@ -16,9 +16,9 @@ function updateCartQty(id, color, qty) {
 
 	let cartItems = JSON.parse(localStorage.getItem('products'));
 
-	//Pour récupérer les qty
-	if (cartItems && cartItems.length > 0) { //tableau de product, recupère la qty des prod
-		for (let cartItem of cartItems) { //Boucle pour recuperer la couleur, donc voir cb le client en a prit
+	////Boucle qui compare l'id  et la couleur pour vérifier que c'est le bon produit a qui on affecte le changement de qty
+	if (cartItems && cartItems.length > 0) {
+		for (let cartItem of cartItems) {
 			if (cartItem.id === currentItem.id && cartItem.color === currentItem.color) {
 				cartItem.qty = parseInt(currentItem.qty);
 			}
@@ -28,6 +28,7 @@ function updateCartQty(id, color, qty) {
 	updateCartTotal();
 }
 
+//Pour supprimer un item stocker dans le localStorage
 function removeCartItem(id, color) {
 	let cartItems = JSON.parse(localStorage.getItem('products'));
 	console.log(cartItems)
@@ -43,7 +44,7 @@ function removeCartItem(id, color) {
 	localStorage.setItem('products', JSON.stringify(cartItems)); // enregistre les items
 	updateCartTotal();
 }
-
+//Pour mettre a jour le prix et la quantité total
 function updateCartTotal() {
 	let newQty = 0;
 	let newTotal = 0;
@@ -154,29 +155,27 @@ form.email.addEventListener('change', function () {
 let orderBtn = document.querySelector('#order');
 
 orderBtn.addEventListener('click', function (e) {
-	console.log('bind')
 	e.preventDefault();
-	console.log('Prénom : ', form.firstName.value);
+	//console.log('Prénom : ', form.firstName.value);
 	// console.log('Nom : ', e.target.lastName.value);
 	// console.log('Adresse : ', e.target.address.value);
 	// console.log('Ville : ', e.target.city.value);
 	// console.log('Email : ', e.target.email.value);
 	console.log(validFirstName(form.firstName) && validLastName(form.lastName) && validAdress(form.address) && validCity(form.city) && validEmail(form.email))
-	// if (validFirstName(form.firstName) && validName(form.name) && validAdress(form.address) && validCity(form.city) && validEmail(form.email)) {
 		let currentCart = JSON.parse(localStorage.getItem('products'));
 		let idList = [];
-		//Pour récupérer les qty
 		if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des prod
 			for (let i of currentCart) {
 				idList.push(i.id);
 			}
 		}
+		//récuprération des infos formulaire via la method post
 		fetch(hostname + '/api/products/order', {
 			method: 'post',
 			headers: {
 				"Content-Type": "application/json"
 			},
-			body: JSON.stringify({
+			body: JSON.stringify({ //Transforme les données js du form en chaine de caractère
 				contact: {
 					firstName: form.firstName.value,
 					lastName: form.lastName.value,
@@ -192,12 +191,11 @@ orderBtn.addEventListener('click', function (e) {
 		}).then(respJSon => {
 			if (respJSon.orderId){
 				localStorage.setItem('orderId', respJSon.orderId);
+				//permet de se rendre sur la page confirmation
 				window.location = 'confirmation.html'
 			}
 		});
-		// form.submit();
-	// }
-})
+});
 
 // ***** Validation Prénom
 const validFirstName = function (inputFirstName) {

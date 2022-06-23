@@ -12,7 +12,6 @@ fetch(url)
 
 	//Appel de l'img du canapé
 	document.querySelector('.item__img > img').src = data.imageUrl;
-
 	document.getElementById('title').innerHTML = data.name;
 	document.getElementById('price').innerHTML = data.price;
 	document.getElementById('description').innerHTML = data.description;
@@ -28,7 +27,7 @@ fetch(url)
 }).catch((err) => console.log(err))
 );
 
-//Écouteur d'évènement sur la soumission du panier === VOIR COMMENT FAIRE POUR ALLEZ SUR L'AUTRE PAGE
+//Écouteur d'évènement sur la soumission du panier
 let button = document.querySelector('#addToCart');
 
 function addToCart(id, color, qty, price){
@@ -42,8 +41,8 @@ function addToCart(id, color, qty, price){
 	let currentCart = JSON.parse(localStorage.getItem('products'));
 	let isNewProduct = true;
 	//Pour récupérer les qty
-	if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des prod
-		for (let i of currentCart) { //Boucle pour recuperer la clr, donc voir cb le client en a prix
+	if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des produits
+		for (let i of currentCart) {
 			if (i.id === cart.id && i.color === cart.color) {
 				i.qty = parseInt(i.qty) + parseInt(cart.qty);
 				isNewProduct = false;
