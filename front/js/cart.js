@@ -23,6 +23,7 @@ function updateCartQty(id, color, qty) {
 				cartItem.qty = parseInt(currentItem.qty);
 			}
 		}
+
 		localStorage.setItem('products', JSON.stringify(cartItems)); // enregistre les items
 	}
 	updateCartTotal();
@@ -88,7 +89,7 @@ if (cartItems !== null) {
                </div>
                <div class="cart__item__content__settings">
                  <div class="cart__item__content__settings__quantity">
-                   <p>Qté : ${product.qty}</p>
+                   <p class="quantities">Qté : ${product.qty}</p>
                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.qty}">
                  </div>
                  <div class="cart__item__content__settings__delete">
@@ -113,6 +114,7 @@ if (cartItems !== null) {
 						let id = article.dataset.id;
 						let qty = e.target.value;
 						updateCartQty(id, color, qty);
+						e.target.previousElementSibling.innerHTML = "Qté : " + qty;
 					})
 				}
 
