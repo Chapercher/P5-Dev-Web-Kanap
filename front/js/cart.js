@@ -45,6 +45,7 @@ function removeCartItem(id, color) {
 	localStorage.setItem('products', JSON.stringify(cartItems)); // enregistre les items
 	updateCartTotal();
 }
+
 //Pour mettre a jour le prix et la quantité total
 function updateCartTotal() {
 	let newQty = 0;
@@ -164,39 +165,39 @@ orderBtn.addEventListener('click', function (e) {
 	// console.log('Ville : ', e.target.city.value);
 	// console.log('Email : ', e.target.email.value);
 	console.log(validFirstName(form.firstName) && validLastName(form.lastName) && validAdress(form.address) && validCity(form.city) && validEmail(form.email))
-		let currentCart = JSON.parse(localStorage.getItem('products'));
-		let idList = [];
-		if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des prod
-			for (let i of currentCart) {
-				idList.push(i.id);
-			}
+	let currentCart = JSON.parse(localStorage.getItem('products'));
+	let idList = [];
+	if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des prod
+		for (let i of currentCart) {
+			idList.push(i.id);
 		}
-		//récuprération des infos formulaire via la method post
-		fetch(hostname + '/api/products/order', {
-			method: 'post',
-			headers: {
-				"Content-Type": "application/json"
+	}
+	//récuprération des infos formulaire via la method post
+	fetch(hostname + '/api/products/order', {
+		method: 'post',
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({ //Transforme les données js du form en chaine de caractère JSON
+			contact: {
+				firstName: form.firstName.value,
+				lastName: form.lastName.value,
+				address: form.address.value,
+				city: form.city.value,
+				email: form.email.value
 			},
-			body: JSON.stringify({ //Transforme les données js du form en chaine de caractère
-				contact: {
-					firstName: form.firstName.value,
-					lastName: form.lastName.value,
-					address: form.address.value,
-					city: form.city.value,
-					email: form.email.value
-				},
-				products: idList
-			})
-		}).then(function (response) {
-			//save le numero dans le local storage
-			return response.json();
-		}).then(respJSon => {
-			if (respJSon.orderId){
-				localStorage.setItem('orderId', respJSon.orderId);
-				//permet de se rendre sur la page confirmation
-				window.location = 'confirmation.html'
-			}
-		});
+			products: idList
+		})
+	}).then(function (response) {
+		//save le numero dans le local storage
+		return response.json();
+	}).then(respJSon => {
+		if (respJSon.orderId) {
+			localStorage.setItem('orderId', respJSon.orderId);
+			//permet de se rendre sur la page confirmation
+			window.location = 'confirmation.html'
+		}
+	}).catch((err) => console.log(err));
 });
 
 // ***** Validation Prénom

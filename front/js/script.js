@@ -1,5 +1,5 @@
+//permet d'afficher les différents produits avec une boucle en contactant l'api avec fetch
 let url = `http://localhost:3000/api/products`;
-
 
 fetch(url)
 	.then(response => response.json()
@@ -19,6 +19,7 @@ fetch(url)
 		document.getElementById('items').innerHTML = html;
 
 	})
+		//permet de retourner une error dans la console si une réponse provoque une exception
 ).catch(err => console.log(err));
 
 

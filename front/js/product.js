@@ -10,7 +10,7 @@ fetch(url)
 	.then(response => response.json()
 	.then((data) => {
 
-	//Appel de l'img du canapé
+	//Appel des options produits (qty/img/name/description)
 	document.querySelector('.item__img > img').src = data.imageUrl;
 	document.getElementById('title').innerHTML = data.name;
 	document.getElementById('price').innerHTML = data.price;
@@ -27,7 +27,7 @@ fetch(url)
 }).catch((err) => console.log(err))
 );
 
-//Écouteur d'évènement sur la soumission du panier
+//Écouteur d'évènement sur la soumission du panier + enregistrement dans le localStorage
 let button = document.querySelector('#addToCart');
 
 function addToCart(id, color, qty, price){
@@ -41,7 +41,7 @@ function addToCart(id, color, qty, price){
 	let currentCart = JSON.parse(localStorage.getItem('products'));
 	let isNewProduct = true;
 	//Pour récupérer les qty
-	if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des produits
+	if (currentCart && currentCart.length > 0) {
 		for (let i of currentCart) {
 			if (i.id === cart.id && i.color === cart.color) {
 				i.qty = parseInt(i.qty) + parseInt(cart.qty);
@@ -51,6 +51,7 @@ function addToCart(id, color, qty, price){
 		if (isNewProduct) {
 			currentCart.push(cart);
 		}
+		//loaclaStorage -> stockage de donné sans délai d'expiration
 		localStorage.setItem('products', JSON.stringify(currentCart)) //enregistre les items
 	} else {
 		let newCart = [];
@@ -58,7 +59,7 @@ function addToCart(id, color, qty, price){
 		localStorage.setItem('products', JSON.stringify(newCart))
 	}
 }
-
+//Soumission au panier du choix client
 button.addEventListener('click', function () {
 	let color = document.getElementById('colors');
 	let qty = document.getElementById('quantity');
