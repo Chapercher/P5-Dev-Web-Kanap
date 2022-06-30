@@ -4,6 +4,8 @@ let total = 0;
 let qty = 0;
 let html = '';
 let hostname = '//localhost:3000';
+let orderBtn = document.querySelector('#order');
+let form = document.querySelector('#login_form');
 
 //function => addEventListener(change) -- Diviser en trois fonction pour gérer les =/= étapes
 function updateCartQty(id, color, qty) {
@@ -32,7 +34,6 @@ function updateCartQty(id, color, qty) {
 //Pour supprimer un item stocker dans le localStorage
 function removeCartItem(id, color) {
 	let cartItems = JSON.parse(localStorage.getItem('products'));
-	console.log(cartItems)
 	for (let i = 0; i < cartItems.length; i++) {
 		if (cartItems[i].id === id && cartItems[i].color === color) {
 			document.querySelector('article.cart__item[data-id="' + cartItems[i].id + '"][data-color="' + cartItems[i].color + '"]').remove();
@@ -40,8 +41,6 @@ function removeCartItem(id, color) {
 			i--;
 		}
 	}
-
-	console.log(cartItems)
 	localStorage.setItem('products', JSON.stringify(cartItems)); // enregistre les items
 	updateCartTotal();
 }
@@ -64,7 +63,6 @@ function updateCartTotal() {
 
 
 // Parcourir les options / ID stocker dans le localStorage
-console.log(cartItems)
 if (cartItems !== null) {
 	for (let i = 0; i < cartItems.length; i++) {
 		let product = cartItems[i];
@@ -135,39 +133,18 @@ if (cartItems !== null) {
 	}
 }
 
-// Formulaire client
-
-let form = document.querySelector('#login_form');
-
-form.firstName.addEventListener('change', function () {
-	validFirstName(this);
-})
-form.lastName.addEventListener('change', function () {
-	validLastName(this);
-})
-form.address.addEventListener('change', function () {
-	validAdress(this);
-})
-form.city.addEventListener('change', function () {
-	validCity(this);
-})
-form.email.addEventListener('change', function () {
-	validEmail(this);
-})
-
-let orderBtn = document.querySelector('#order');
-
 orderBtn.addEventListener('click', function (e) {
 	e.preventDefault();
-	//console.log('Prénom : ', form.firstName.value);
-	// console.log('Nom : ', e.target.lastName.value);
-	// console.log('Adresse : ', e.target.address.value);
-	// console.log('Ville : ', e.target.city.value);
-	// console.log('Email : ', e.target.email.value);
-	console.log(validFirstName(form.firstName) && validLastName(form.lastName) && validAdress(form.address) && validCity(form.city) && validEmail(form.email))
+	let errors = document.querySelectorAll('.error')
+	for (const error of errors) {
+		if (error.innerHTML.length){
+			alert(`Une erreur a été rencontré lors de l'envoi du formulaire`);
+			return
+		}
+	}
 	let currentCart = JSON.parse(localStorage.getItem('products'));
 	let idList = [];
-	if (currentCart && currentCart.length > 0) { //tableau de product, recupère la qty des prod
+	if (currentCart && currentCart.length > 0) {
 		for (let i of currentCart) {
 			idList.push(i.id);
 		}
@@ -200,12 +177,31 @@ orderBtn.addEventListener('click', function (e) {
 	}).catch((err) => console.log(err));
 });
 
+// Formulaire client
+
+
+form.firstName.addEventListener('change', function () {
+	validFirstName(this);
+})
+form.lastName.addEventListener('change', function () {
+	validLastName(this);
+})
+form.address.addEventListener('change', function () {
+	validAdress(this);
+})
+form.city.addEventListener('change', function () {
+	validCity(this);
+})
+form.email.addEventListener('change', function () {
+	validEmail(this);
+})
+
+
 // ***** Validation Prénom
 const validFirstName = function (inputFirstName) {
 	let firstNameRegExp = new RegExp(
 		/^[a-zA-Z\-]+$/
 	);
-	// console.log(firstNameRegExp);
 	//On test l'expression régulière
 	if (firstNameRegExp.test(inputFirstName.value)) {
 		document.getElementById('firstNameErrorMsg').innerHTML = "";
@@ -218,7 +214,6 @@ const validLastName = function (inputLastName) {
 	let nameRegExp = new RegExp(
 		/^[a-zA-Z\-]+$/
 	);
-	// console.log(nameRegExp);
 	//On test l'expression régulière
 	if (nameRegExp.test(inputLastName.value)) {
 		document.getElementById('lastNameErrorMsg').innerHTML = "";
@@ -229,10 +224,8 @@ const validLastName = function (inputLastName) {
 // ***** Validation Adresse
 const validAdress = function (inputAdress) {
 	let adressRegExp = new RegExp(
-		// /^[0-9]+[a-zA-Z\-]+$/
 		/(\d+)?\,?\s?(bis|ter|quater)?\,?\s?(rue|avenue|boulevard|r|av|ave|bd|bvd|square|sente|impasse|cours|esplanade|allée|résidence|parc|rond-point|chemin|côte|place|cité|quai|passage|lôtissement|hameau)?\s([a-zA-Zà-ÿ0-9\s]{2,})+$/gi
 	);
-	// console.log(adressRegExp);
 	//On test l'expression régulière
 	if (adressRegExp.test(inputAdress.value)) {
 		document.getElementById('addressErrorMsg').innerHTML = "";
@@ -245,7 +238,6 @@ const validCity = function (inputCity) {
 	let cityRegExp = new RegExp(
 		/^[a-zA-Z\-]+$/
 	);
-	// console.log(cityRegExp);
 	//On test l'expression régulière
 	if (cityRegExp.test(inputCity.value)) {
 		document.getElementById('cityErrorMsg').innerHTML = "";
@@ -259,7 +251,6 @@ const validEmail = function (inputEmail) {
 	let emailRegExp = new RegExp(
 		'^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g'
 	);
-	// console.log(emailRegExp);
 	//On test l'expression régulière
 	if (emailRegExp.test(inputEmail.value)) {
 		document.getElementById('emailErrorMsg').innerHTML = "";

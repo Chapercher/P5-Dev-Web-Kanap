@@ -2,9 +2,10 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const productId = urlParams.get('id');
+let hostname = '//localhost:3000';
 
 //Appel a l'API avec "id" en paramètre de function
-let url = `http://localhost:3000/api/products/${productId}`;
+let url = (hostname + `/api/products/${productId}`);
 
 fetch(url)
 	.then(response => response.json()

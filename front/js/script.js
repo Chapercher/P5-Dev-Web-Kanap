@@ -1,7 +1,7 @@
 //permet d'afficher les différents produits avec une boucle en contactant l'api avec fetch
-let url = `http://localhost:3000/api/products`;
+let hostname = '//localhost:3000';
 
-fetch(url)
+fetch((hostname + `/api/products`))
 	.then(response => response.json()
 	.then((data) => {
 		console.log(data);
